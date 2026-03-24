@@ -1,0 +1,109 @@
+
+
+Download OMNeT++ wsl image from their website (this specific wsl distro comes loaded up with an environment set for running omnetpp simulations)
+Download (OPP_ENV) The file is opp_env.swl   
+    it is a wsl2 image for omnet ->
+
+https://omnetpp.org/download/
+
+
+-------------------------------------
+
+Once download is complete open opp_env.wsl
+
+It should open a wsl.exe terminal prompt
+
+I jdid a manual install - option 3 (if I'm not mistaken)
+ to install the specific INET and OMNeT versions specified in the PiLeach directory
+
+
+This installs a Omnet specificw wsl distro named 'opp_env" beside your already existing ubuntu distro(if you set up one before)
+
+To access this wsl type the following command in your powershell terminal (This starts up your 'opp_env' wsl distro)
+
+    wsl -d opp_env
+
+To istall OMNET 6.0.3 (as specified by the PiLeach project)
+
+    opp_env install omnetpp-6.0.3
+
+To install INET 4.5.0 
+
+    opp_env install inet-4.5.0
+
+P.S. The two installations takes about 20 minutes each to complete
+You should now have omnetpp-6.0.3 and inet-4.5.0 directories
+
+
+(Eventually one of us,probably me, should make our own separate copy of the repo and push it to our own GITHUB repo that will allow us to add our modifications)
+For now , in the directory containing your INET and OMNeT installations clone the PiLeach directory
+
+    git clone https://github.com/ianmusembi/fcwLeach.git
+
+
+
+----------------------------------------------------------------
+
+Installation instructions for simulation (from github PiLeach repo)
+Slight difference from the instructions on the GITHUB
+Assuming you have already installed OMNeT++ 6.0.3 and INET 4.5.0 (check previous commands)
+
+
+Navigate to inet-4.5.0 directory (ignore the copying of directories in the Github repo readme)
+
+Run the following command to create makefiles
+
+    make makefiles
+
+Then run make to build the makefiles
+
+    make
+
+Or speed up the build process by telling make to utilize multiple cores(parallelism type shi) to speed up the build process 
+
+    make -j$(nproc)
+
+
+
+go into the cloned PiLeach directory
+    
+    cd <path to PiLeach dir>
+
+
+Open the file /fcwLeach/Simulation/LeachProtocolSimulation/LeachProtocolNetwork.ned
+Replace the first line
+
+    package samples.LeachProtocolSimulation;
+
+with 
+
+    package Simulation.LeachProtocolSimulation;
+
+
+From the top level of fcwLeach repo
+run opp_makemake command to generate the fcwLeach makefile
+
+    opp_makemake -f --deep -o fcwLeach -I. -I../inet-4.5.0/src -L../inet-4.5.0/src -lINET -KINET_PROJ=../inet-4.5.0
+
+This makeFile will build the local LEACHnode and routing cpp files and link inet to the produced executable
+
+Build the project to generate an executable named fcwLeach
+
+    make -j$(nproc)
+
+check that an executable is made ./fcwLeach or ./out/clang-release/*
+
+If it exists
+
+Start up the simulation with a GUI using the following command
+
+    ./fcwLeach -u Qtenv -n .:../inet-4.5.0/src Simulation/LeachProtocolSimulation/omnetpp.ini
+
+
+Once the simulation starts up it will ask you to setup Infile configuration
+Choose LEACHPROTOCOL
+
+And hopefully the simulation should start!!
+
+
+
