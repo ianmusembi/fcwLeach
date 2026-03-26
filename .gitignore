@@ -11,3 +11,9 @@ CTestTestfile.cmake
 _deps
 inet/routing/leach/Readme.md
 *.o
+*.o.d 
+*.qtenvrc
+*.last-copts
+out/
+*.vci
+*.vec
