@@ -1,7 +1,18 @@
 <environment>
-	<!-- shapes -->
-	<object position="center 600 200 25" orientation="0 0 0" shape="cuboid 600 100 50" material="concrete" fill-color="36 186 50" opacity="1"/>
-	<object position="center 600 150 25" orientation="0 0 0" shape="sphere 600 100 50" radius="15" material="brick" fill-color="36 186 50" opacity="0.8"/>
-	<object position="center 450 175 25" orientation="0 0 0" shape="sphere 600 100 50" radius="15" material="concrete" fill-color="36 186 50" opacity="0.8"/>
-	<object position="center 500 200 25" orientation="0 0 0" shape="sphere 600 100 50" radius="15" material="concrete" fill-color="36 186 50" opacity="0.8"/>
+	<object position="center 600 300 25" orientation="0 0 90" shape="cuboid 10 50 50" material="concrete"  opacity="1"/>
+	<object position="center 400 150 25" orientation="0 0 45" shape="sphere 40 175 50" radius="15" material="concrete"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 150 75 25" orientation="0 0 0" shape="sphere 10 145 50" radius="25" material="concrete" fill-color="255 0 0" opacity="1"/>
+	<object position="center 300 400 25" orientation="0 0 45" shape="sphere 20 200 50" radius="25" material="brick"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 200 500 45" orientation="0 0 45" shape="sphere 20 200 50" radius="25" material="concrete"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 250 450 25" orientation="0 0 45" shape="sphere 20 50 50" radius="15" material="brick"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 350 350 55" orientation="0 0 45" shape="sphere 20 60 50" radius="10" material="concrete"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 550 400 50" orientation="0 0 45" shape="sphere 20 50 50" radius="25" material="brick"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 600 550 50" orientation="0 0 45" shape="sphere 20 50 50" radius="25" material="concrete"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 375 625 50" orientation="0 0 45" shape="sphere 20 50 50" radius="25" material="brick"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 325 650 50" orientation="0 0 45" shape="sphere 20 50 50" radius="25" material="brick"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 275 600 50" orientation="0 0 45" shape="sphere 20 50 50" radius="25" material="concrete"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 250 250 25" orientation="0 0 45" shape="sphere 20 30 50" radius="10" material="brick"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 200 200 25" orientation="0 0 45" shape="sphere 20 40 50" radius="15" material="brick"  fill-color="255 0 0" opacity="1"/>
+	<object position="center 250 145 25" orientation="0 0 0" shape="sphere 20 145 50" radius="25" material="concrete" fill-color="255 0 0" opacity="1"/>
+	<object position="center 750 600 25" orientation="0 0 90" shape="sphere 30 220 50" radius="10" material="brick" fill-color="255 0 0" opacity="1"/>
 </environment>
