@@ -1,0 +1,7 @@
+<environment>
+	<!-- shapes -->
+	<object position="center 600 200 25" orientation="0 0 0" shape="cuboid 600 100 50" material="concrete" fill-color="36 186 50" opacity="1"/>
+	<object position="center 600 150 25" orientation="0 0 0" shape="sphere 600 100 50" radius="15" material="brick" fill-color="36 186 50" opacity="0.8"/>
+	<object position="center 450 175 25" orientation="0 0 0" shape="sphere 600 100 50" radius="15" material="concrete" fill-color="36 186 50" opacity="0.8"/>
+	<object position="center 500 200 25" orientation="0 0 0" shape="sphere 600 100 50" radius="15" material="concrete" fill-color="36 186 50" opacity="0.8"/>
+</environment>
