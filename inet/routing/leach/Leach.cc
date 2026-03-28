@@ -600,13 +600,21 @@ void Leach::finish() {
     generateNodePosCSV();
     generatePacketLogCSV();
 
+    SimpleEpEnergyStorage *energyStorageModule = check_and_cast<SimpleEpEnergyStorage*>(host->getSubmodule("energyStorage"));
+    J residualCapacity =  energyStorageModule->getResidualEnergyCapacity();
+    J initialCap = J(50); // Value taken from  *.host[*].energyStorage.initialCapacity in omnetpp.ini file
+
     EV << "Total control packets sent by CH: " << controlPktSent << endl;
     EV << "Total control packets received by NCHs from CH: " << controlPktReceived << endl;
     EV << "Total data packets sent to CH: " << dataPktSent << endl;
     EV << "Total data packets received by CH from NCHs: " << dataPktReceived << endl;
     EV << "Total data packets received by CH from NCHs verified: " << dataPktReceivedVerf << endl;
     EV << "Total BS packets sent by CH: " << bsPktSent << endl;
+    EV << "Remaining energy of node << " <<  residualCapacity << "J" << endl;
+    EV << "Total energy lost in host: " <<  (initialCap - residualCapacity) << endl;
 
+
+    recordScalar("#residualCapacity",  residualCapacity.get());
     recordScalar("#dataPktSent", dataPktSent);
     recordScalar("#dataPktReceived", dataPktReceived);
     recordScalar("#dataPktReceivedVerf", dataPktReceivedVerf);
