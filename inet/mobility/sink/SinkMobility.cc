@@ -1,7 +1,7 @@
 #include <omnetpp.h>
 #include "inet/mobility/sink/SinkMobility.h"
 #include "inet/common/INETMath.h"
-
+#include "inet/common/SinkLocation_m.h"
 
 namespace inet {
 
@@ -158,7 +158,11 @@ void SinkMobility::move()
         startedWait = (now).dbl();
         inet::Coord pos = getCurrentPosition();
         EV << "MS Stopped at " << simTime() <<  endl;
-        emit(stopSignal, now);
+        SinkLocation *loc = new SinkLocation();
+        loc->setXPos(lastPosition.x);
+        loc->setYPos(lastPosition.y);
+        loc->setSojournTime(sojournTime);
+        emit(stopSignal, loc);
     }
 }
 

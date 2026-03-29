@@ -22,14 +22,14 @@ class INET_API LeachMS : public LeachBS, public cIListener {
   
   protected:
     virtual void initialize(int stage) override;
-    virtual void receiveSignal(cComponent *source, simsignal_t signalID, const SimTime& t, cObject *details) override;
-    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject *details) override {}
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject *details) override;
     virtual void receiveSignal(cComponent *source, simsignal_t signalID, bool b, cObject *details) override {}
     virtual void receiveSignal(cComponent *source, simsignal_t signalID, long l, cObject *details) override {}
     virtual void receiveSignal(cComponent *source, simsignal_t signalID, unsigned long l, cObject *details) override {}
     virtual void receiveSignal(cComponent *source, simsignal_t signalID, double d, cObject *details) override {}
     virtual void receiveSignal(cComponent *source, simsignal_t signalID, const char *s, cObject *details) override {}
-    void startNewRound(double currentX, double currentY);
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, const SimTime& t, cObject *details) override {}
+    void startNewRound(double currentX, double currentY, double sojourn);
 };
 
 } // namespace inet

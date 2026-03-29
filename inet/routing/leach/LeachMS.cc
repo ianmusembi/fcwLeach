@@ -13,6 +13,7 @@
 #include <map>
 #include <omnetpp.h>
 #include "inet/common/geometry/common/Coord.h"
+#include "inet/common/SinkLocation_m.h"
 
 namespace inet {
 
@@ -30,21 +31,23 @@ void LeachMS::initialize(int stage) {
     }
 }
 
-void LeachMS::receiveSignal(cComponent *source, simsignal_t signalID, const SimTime& t, cObject *details) {
+void LeachMS::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject *details) {
     Enter_Method_Silent();
     if (signalID == stopSignal) {
         EV << "MS Stop signal received at " << simTime() << endl;
-        // const Coord *pos = (const Coord *)(obj);
-        this->startNewRound(5.0, 6.0);
+        SinkLocation *loc = check_and_cast<SinkLocation *>(obj);
+        this->startNewRound(loc->getXPos(), loc->getYPos(), loc->getSojournTime());
+        delete obj;
     }
 }
 
-void LeachMS::startNewRound(double currentX, double currentY){
+void LeachMS::startNewRound(double currentX, double currentY, double sojourn){
     auto sinkPkt = makeShared<LeachSinkPkt>();
     sinkPkt->setChunkLength(b(128));
     sinkPkt->setPacketType(SINK);
     sinkPkt->setPositionX(currentX);
     sinkPkt->setPositionY(currentY);
+    sinkPkt->setSojournTime(sojourn);
     Ipv4Address source = interface80211ptr->getProtocolData<Ipv4InterfaceData>()->getIPAddress();
     sinkPkt->setSrcAddress(source);
 
