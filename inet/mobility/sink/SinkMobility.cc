@@ -1,6 +1,7 @@
+#include <omnetpp.h>
 #include "inet/mobility/sink/SinkMobility.h"
-
 #include "inet/common/INETMath.h"
+
 
 namespace inet {
 
@@ -12,7 +13,8 @@ SinkMobility::SinkMobility()
     currentSpeed = 0;
     d = 0;
     corner1 = corner2 = corner3 = corner4 = 0;
-    sojournTime = 2;
+    sojourn1 = sojourn2 = sojourn3 = sojourn4 = 0;
+    sojournTime = 0;
     startedWait = 0;
 }
 
@@ -23,15 +25,21 @@ void SinkMobility::initialize(int stage)
     EV_TRACE << "initializing RectangleMobility stage " << stage << endl;
     if (stage == INITSTAGE_LOCAL) {
         speed = par("speed");
+        sojournTime = par("sojournTime");
+        stopSignal = registerSignal("sinkStopped");
         currentSpeed = speed;
         stationary = (speed == 0);
 
         // calculate helper variables
         double dx = constraintAreaMax.x - constraintAreaMin.x;
         double dy = constraintAreaMax.y - constraintAreaMin.y;
+        sojourn1 = (dx / 2);
         corner1 = dx;
+        sojourn2 = corner1 + (dy / 2);
         corner2 = corner1 + dy;
+        sojourn3 = corner2 + (dx / 2);
         corner3 = corner2 + dx;
+        sojourn4 = corner3 + (dy / 2);
         corner4 = corner3 + dy;
 
         // determine start position
@@ -66,34 +74,55 @@ void SinkMobility::move()
         return;
     }
     double elapsedTime = (now - lastUpdate).dbl();
-    double newD = d + (currentSpeed * elapsedTime); //want to save d, if we pass corner, stop there
+    double newD = d + (currentSpeed * elapsedTime); //want to save d, if pass corner, stop there
 
     // while (newD < 0)
     //     newD += corner4;
 
     // while (newD >= corner4)
     //     newD -= corner4;
+    bool stopped = false;
     if(d == newD){
         d = newD;
     }
-    else if(d < corner1 && corner1 <= newD){
+    else if(d < sojourn1 && sojourn1 <= newD){
+        stopped = true;
         currentSpeed = 0;
-        startedWait = (now).dbl();
+        d = sojourn1;
+    }
+    else if(d < corner1 && corner1 <= newD){
+        stopped = true;
+        currentSpeed = 0;
         d = corner1;
     }
-    else if(d < corner2 && corner2 <= newD){
+    else if(d < sojourn2 && sojourn2 <= newD){
+        stopped = true;
         currentSpeed = 0;
-        startedWait = (now).dbl();
+        d = sojourn2;
+    }
+    else if(d < corner2 && corner2 <= newD){
+        stopped = true;
+        currentSpeed = 0;
         d = corner2;
     } 
-    else if(d < corner3 && corner3 <= newD){
+    else if(d < sojourn3 && sojourn3 <= newD){
+        stopped = true;
         currentSpeed = 0;
-        startedWait = (now).dbl();
+        d = sojourn3;
+    }
+    else if(d < corner3 && corner3 <= newD){
+        stopped = true;
+        currentSpeed = 0;
         d = corner3;
     }
-    else if(d < corner4 && corner4 <= newD){
+    else if(d < sojourn4 && sojourn4 <= newD){
+        stopped = true;
         currentSpeed = 0;
-        startedWait = (now).dbl();
+        d = sojourn4;
+    }
+    else if(d < corner4 && corner4 <= newD){
+        stopped = true;
+        currentSpeed = 0;
         d = 0;
     }
     else{
@@ -123,6 +152,13 @@ void SinkMobility::move()
         lastPosition.x = constraintAreaMin.x;
         lastPosition.y = constraintAreaMax.y - d + corner3;
         lastVelocity = Coord(0, -currentSpeed, 0);
+    }
+
+    if(stopped){
+        startedWait = (now).dbl();
+        inet::Coord pos = getCurrentPosition();
+        EV << "MS Stopped at " << simTime() <<  endl;
+        emit(stopSignal, now);
     }
 }
 

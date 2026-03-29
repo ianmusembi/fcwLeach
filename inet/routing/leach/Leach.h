@@ -34,13 +34,10 @@ class INET_API Leach : public RoutingProtocolBase {
     };
 
     bool isForwardHello = false;
-    cMessage *event = nullptr;
     cPar *broadcastDelay = nullptr;
     std::list<ForwardEntry *> *forwardList = nullptr;
-    NetworkInterface *interface80211ptr = nullptr;
     int interfaceId = -1;
     unsigned int sequencenumber = 0;
-    cModule *host = nullptr;
     ForwardEntry *forwardEntry = nullptr;
 
     Ipv4Address idealCH;
@@ -50,14 +47,18 @@ class INET_API Leach : public RoutingProtocolBase {
     int dataPktSent = 0;
     int dataPktReceived = 0;
     int dataPktReceivedVerf = 0;
-    int controlPktSent = 0;
     int controlPktReceived = 0;
     int bsPktSent = 0;
-    int round = 0;
-    int weight = 0;
     int totalChCount = 0;  // Added to track total CH counts over time
 
   protected:
+    int round = 0;
+    int weight = 0;
+    int controlPktSent = 0;
+    cMessage *event = nullptr;
+    NetworkInterface *interface80211ptr = nullptr;
+    cModule *host = nullptr;
+
     simtime_t helloInterval;
     IInterfaceTable *ift = nullptr;
     IRoutingTable *rt = nullptr;
@@ -140,7 +141,7 @@ class INET_API Leach : public RoutingProtocolBase {
     void start();
     void stop();
     virtual void refreshDisplay() const override;
-    void finish() override;
+    virtual void finish() override;
 
     enum SelfMsgKinds { SELF = 1, DATA2CH, DATA2BS };
 

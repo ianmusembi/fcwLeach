@@ -15,7 +15,6 @@ namespace inet {
 class INET_API LeachBS : public RoutingProtocolBase {
   private:
     int bsPktReceived = 0;
-    NetworkInterface *interface80211ptr = nullptr;
     int interfaceId = -1;
     unsigned int sequencenumber = 0;
     cModule *host = nullptr;
@@ -24,6 +23,7 @@ class INET_API LeachBS : public RoutingProtocolBase {
 
   protected:
     IInterfaceTable *ift = nullptr;
+    NetworkInterface *interface80211ptr = nullptr;
 
     struct packetRecLogEntry {
         std::string fingerprint;

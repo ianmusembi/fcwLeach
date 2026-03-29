@@ -21,6 +21,7 @@ enum LeachPktType {
     SCH = 3;
     DATA = 4;
     BS = 5;
+    SINK = 6;
 }
 
 class ScheduleEntry extends cObject {
@@ -53,7 +54,11 @@ class LeachSchedulePkt extends LeachControlPkt {
 	
 }
 
-
+class LeachSinkPkt extends LeachControlPkt { 
+	double sojournTime;
+    double positionX;
+    double positionY;
+}
 
 
 

@@ -18,10 +18,12 @@ class INET_API SinkMobility : public MovingMobilityBase
     double startedWait;
     double sojournTime;
     double currentSpeed;
+    simsignal_t stopSignal;
 
     // state
     double d; ///< distance from (x1,y1), measured clockwise on the perimeter
     double corner1, corner2, corner3, corner4;
+    double sojourn1, sojourn2, sojourn3, sojourn4;
 
   protected:
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
