@@ -169,6 +169,7 @@ class INET_API Leach : public RoutingProtocolBase {
     void generateEventLogCSV();
     void generateNodePosCSV();
     void generatePacketLogCSV();
+    void generateNodeEnergyCSV(std::string name,int remaining, int energyDiff);
 
     // Helper methods for energy management
     J getNodeCurrentEnergy() const;

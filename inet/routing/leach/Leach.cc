@@ -17,6 +17,7 @@
 #include <functional>
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace power;
 namespace inet {
 
@@ -568,6 +569,17 @@ void Leach::generateNodePosCSV() {
     nodePosFile.close();
 }
 
+void Leach::generateNodeEnergyCSV(std::string name, int remaining, int energyDiff){
+    std::ofstream hostEnergyFile("hostEnergyStats.csv", std::ios::app);
+    try{
+        hostEnergyFile << name << "," << remaining << "," << energyDiff << std::endl;
+        hostEnergyFile.close();
+    }
+    catch (...) {
+        EV << "Error writing to file!" << endl;
+    }
+}
+
 void Leach::generatePacketLogCSV() {
     std::ofstream packetLogFile("packetLog.csv");
     packetLogFile << "Data-Sent" << std::endl;
@@ -602,7 +614,11 @@ void Leach::finish() {
 
     SimpleEpEnergyStorage *energyStorageModule = check_and_cast<SimpleEpEnergyStorage*>(host->getSubmodule("energyStorage"));
     J residualCapacity =  energyStorageModule->getResidualEnergyCapacity();
-    J initialCap = J(50); // Value taken from  *.host[*].energyStorage.initialCapacity in omnetpp.ini file
+    J initialCap = J(100); // Value taken from  *.host[*].energyStorage.initialCapacity in omnetpp.ini file
+
+    int diff = (initialCap.get() - residualCapacity.get());
+
+    generateNodeEnergyCSV(host->getFullName(), residualCapacity.get(), diff);
 
     EV << "Total control packets sent by CH: " << controlPktSent << endl;
     EV << "Total control packets received by NCHs from CH: " << controlPktReceived << endl;
@@ -612,7 +628,6 @@ void Leach::finish() {
     EV << "Total BS packets sent by CH: " << bsPktSent << endl;
     EV << "Remaining energy of node << " <<  residualCapacity << "J" << endl;
     EV << "Total energy lost in host: " <<  (initialCap - residualCapacity) << endl;
-
 
     recordScalar("#residualCapacity",  residualCapacity.get());
     recordScalar("#dataPktSent", dataPktSent);
