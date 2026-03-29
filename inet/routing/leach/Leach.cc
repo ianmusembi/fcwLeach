@@ -18,6 +18,11 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <unordered_map>
+
+std::unordered_map<std::string, int> energyMap;
+std::unordered_map<std::string, int> diffMap;
+
 using namespace power;
 namespace inet {
 
@@ -505,6 +510,13 @@ void Leach::addToEventLog(Ipv4Address srcAddr, Ipv4Address destAddr, std::string
     try {
         SimpleEpEnergyStorage *energyStorageModule = check_and_cast<SimpleEpEnergyStorage*>(host->getSubmodule("energyStorage"));
         residualCapacity = energyStorageModule->getResidualEnergyCapacity();
+
+        J initialCap = J(100); // Value taken from  *.host[*].energyStorage.initialCapacity in omnetpp.ini file
+        int diff = (initialCap.get() - residualCapacity.get());
+        
+        energyMap[host->getFullName()] = diff;
+        diffMap[host->getFullName()] = residualCapacity.get();
+
     } catch (const cRuntimeError& e) {
         EV << "Energy storage error: " << e.what() << endl;
     }
@@ -569,10 +581,10 @@ void Leach::generateNodePosCSV() {
     nodePosFile.close();
 }
 
-void Leach::generateNodeEnergyCSV(std::string name, int remaining, int energyDiff){
+void Leach::generateNodeEnergyCSV(std::string name){
     std::ofstream hostEnergyFile("hostEnergyStats.csv", std::ios::app);
     try{
-        hostEnergyFile << name << "," << remaining << "," << energyDiff << std::endl;
+        hostEnergyFile << name << "," << energyMap[host->getFullName()] << "," << diffMap[host->getFullName()] << std::endl;
         hostEnergyFile.close();
     }
     catch (...) {
@@ -618,7 +630,7 @@ void Leach::finish() {
 
     int diff = (initialCap.get() - residualCapacity.get());
 
-    generateNodeEnergyCSV(host->getFullName(), residualCapacity.get(), diff);
+    generateNodeEnergyCSV(host->getFullName());
 
     EV << "Total control packets sent by CH: " << controlPktSent << endl;
     EV << "Total control packets received by NCHs from CH: " << controlPktReceived << endl;
