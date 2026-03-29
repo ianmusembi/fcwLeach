@@ -17,6 +17,12 @@
 #include <functional>
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <unordered_map>
+
+std::unordered_map<std::string, int> energyMap;
+std::unordered_map<std::string, int> diffMap;
+
 using namespace power;
 namespace inet {
 
@@ -504,6 +510,13 @@ void Leach::addToEventLog(Ipv4Address srcAddr, Ipv4Address destAddr, std::string
     try {
         SimpleEpEnergyStorage *energyStorageModule = check_and_cast<SimpleEpEnergyStorage*>(host->getSubmodule("energyStorage"));
         residualCapacity = energyStorageModule->getResidualEnergyCapacity();
+
+        J initialCap = J(100); // Value taken from  *.host[*].energyStorage.initialCapacity in omnetpp.ini file
+        int diff = (initialCap.get() - residualCapacity.get());
+        
+        energyMap[host->getFullName()] = diff;
+        diffMap[host->getFullName()] = residualCapacity.get();
+
     } catch (const cRuntimeError& e) {
         EV << "Energy storage error: " << e.what() << endl;
     }
@@ -568,6 +581,17 @@ void Leach::generateNodePosCSV() {
     nodePosFile.close();
 }
 
+void Leach::generateNodeEnergyCSV(std::string name){
+    std::ofstream hostEnergyFile("hostEnergyStats.csv", std::ios::app);
+    try{
+        hostEnergyFile << name << "," << energyMap[host->getFullName()] << "," << diffMap[host->getFullName()] << std::endl;
+        hostEnergyFile.close();
+    }
+    catch (...) {
+        EV << "Error writing to file!" << endl;
+    }
+}
+
 void Leach::generatePacketLogCSV() {
     std::ofstream packetLogFile("packetLog.csv");
     packetLogFile << "Data-Sent" << std::endl;
@@ -600,13 +624,24 @@ void Leach::finish() {
     generateNodePosCSV();
     generatePacketLogCSV();
 
+    SimpleEpEnergyStorage *energyStorageModule = check_and_cast<SimpleEpEnergyStorage*>(host->getSubmodule("energyStorage"));
+    J residualCapacity =  energyStorageModule->getResidualEnergyCapacity();
+    J initialCap = J(100); // Value taken from  *.host[*].energyStorage.initialCapacity in omnetpp.ini file
+
+    int diff = (initialCap.get() - residualCapacity.get());
+
+    generateNodeEnergyCSV(host->getFullName());
+
     EV << "Total control packets sent by CH: " << controlPktSent << endl;
     EV << "Total control packets received by NCHs from CH: " << controlPktReceived << endl;
     EV << "Total data packets sent to CH: " << dataPktSent << endl;
     EV << "Total data packets received by CH from NCHs: " << dataPktReceived << endl;
     EV << "Total data packets received by CH from NCHs verified: " << dataPktReceivedVerf << endl;
     EV << "Total BS packets sent by CH: " << bsPktSent << endl;
+    EV << "Remaining energy of node << " <<  residualCapacity << "J" << endl;
+    EV << "Total energy lost in host: " <<  (initialCap - residualCapacity) << endl;
 
+    recordScalar("#residualCapacity",  residualCapacity.get());
     recordScalar("#dataPktSent", dataPktSent);
     recordScalar("#dataPktReceived", dataPktReceived);
     recordScalar("#dataPktReceivedVerf", dataPktReceivedVerf);
